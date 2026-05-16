@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
+from rest_framework.generics import get_object_or_404
 from rest_framework.exceptions import PermissionDenied
 
 from apps.feed.api.serializers import (
-    FeedInventorySerializer, FeedTransactionListSerializer, FeedTransactionCreateSerializer,
+    FeedInventorySerializer, FeedTransactionListSerializer, FeedTransactionCreateSerializer, FeedTransactionUpdateSerializer,
 )
+from apps.feed.models import FeedTransaction
 from apps.feed.selectors import get_feed_inventory, get_feed_transactions
-from apps.feed.services import create_feed_transaction
+from apps.feed.services import create_feed_transaction, update_feed_transaction, delete_feed_transaction
 from apps.farms.selectors import user_has_farm_access
 from apps.permissions.permissions import require_permission
 from apps.common.responses import success_response, created_response
@@ -45,3 +47,35 @@ class FeedTransactionListCreateView(APIView):
             raise PermissionDenied("No access to this farm.")
         tx = create_feed_transaction(serializer.validated_data, performed_by=request.user)
         return created_response(data=FeedTransactionListSerializer(tx).data)
+
+
+class FeedTransactionDetailView(APIView):
+
+    def get_permissions(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return [require_permission("feed.update")()]
+        if self.request.method == "DELETE":
+            return [require_permission("feed.delete")()]
+        return [require_permission("feed.view")()]
+
+    def _get_transaction(self, request, transaction_id):
+        tx = get_object_or_404(FeedTransaction, id=transaction_id)
+        if not user_has_farm_access(request.user, tx.farm_id):
+            raise PermissionDenied("No access to this farm.")
+        return tx
+
+    def get(self, request, transaction_id):
+        tx = self._get_transaction(request, transaction_id)
+        return success_response(data=FeedTransactionListSerializer(tx).data)
+
+    def put(self, request, transaction_id):
+        tx = self._get_transaction(request, transaction_id)
+        serializer = FeedTransactionUpdateSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        tx = update_feed_transaction(tx, serializer.validated_data, performed_by=request.user)
+        return success_response(data=FeedTransactionListSerializer(tx).data)
+
+    def delete(self, request, transaction_id):
+        tx = self._get_transaction(request, transaction_id)
+        delete_feed_transaction(tx, performed_by=request.user)
+        return success_response(message="Feed transaction deleted.", data={})

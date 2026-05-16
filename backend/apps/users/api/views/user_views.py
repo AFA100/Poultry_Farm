@@ -1,6 +1,6 @@
-from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from apps.users.models import User
-from apps.users.api.serializers.user import UserListSerializer, UserCreateSerializer, UserDetailSerializer
+from apps.users.api.serializers.user import UserListSerializer, UserCreateSerializer, UserDetailSerializer, UserUpdateSerializer
 from apps.permissions.permissions import require_permission
 
 
@@ -19,8 +19,18 @@ class UserListCreateView(ListCreateAPIView):
         return [require_permission("users.view")()]
 
 
-class UserDetailView(RetrieveUpdateAPIView):
+class UserDetailView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
-    serializer_class = UserDetailSerializer
-    permission_classes = [require_permission("users.view")]
-    lookup_field = "id"
+    def get_permissions(self):
+        if self.request.method == "POST":
+            return [require_permission("users.create")()]
+        if self.request.method in ("PUT", "PATCH"):
+            return [require_permission("users.update")()]
+        if self.request.method == "DELETE":
+            return [require_permission("users.delete")()]
+        return [require_permission("users.view")()]
+
+    def get_serializer_class(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return UserUpdateSerializer
+        return UserDetailSerializer

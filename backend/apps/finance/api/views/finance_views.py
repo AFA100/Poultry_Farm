@@ -5,14 +5,14 @@ from rest_framework.exceptions import PermissionDenied
 from apps.finance.models import Expense, Income, Capital
 from apps.finance.api.serializers import (
     ExpenseListSerializer, ExpenseDetailSerializer, ExpenseCreateSerializer, ExpenseUpdateSerializer,
-    IncomeListSerializer, IncomeCreateSerializer, IncomeUpdateSerializer,
-    CapitalListSerializer, CapitalCreateSerializer,
+    IncomeListSerializer, IncomeCreateSerializer, IncomeUpdateSerializer, IncomeDetailSerializer,
+    CapitalListSerializer, CapitalCreateSerializer, CapitalDetailSerializer, CapitalUpdateSerializer,
 )
 from apps.finance.selectors import get_expenses, get_income, get_capital
 from apps.finance.services import (
-    create_expense, update_expense, approve_expense,
-    create_income, update_income, approve_income,
-    create_capital, approve_capital,
+    create_expense, update_expense, approve_expense, delete_expense,
+    create_income, update_income, approve_income, delete_income,
+    create_capital, approve_capital, update_capital, delete_capital,
 )
 from apps.farms.selectors import user_has_farm_access
 from apps.permissions.permissions import require_permission
@@ -74,6 +74,11 @@ class ExpenseDetailView(APIView):
         expense = update_expense(expense, serializer.validated_data, performed_by=request.user)
         return success_response(data=ExpenseDetailSerializer(expense).data)
 
+    def delete(self, request, expense_id):
+        expense = self._get(request, expense_id)
+        delete_expense(expense, performed_by=request.user)
+        return success_response(message="Expense deleted.", data={})
+
 
 class ExpenseApproveView(APIView):
     permission_classes = [require_permission("expenses.approve")]
@@ -128,6 +133,38 @@ class IncomeApproveView(APIView):
         return success_response(data=IncomeListSerializer(income).data, message="Income approved.")
 
 
+class IncomeDetailView(APIView):
+
+    def get_permissions(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return [require_permission("income.update")()]
+        if self.request.method == "DELETE":
+            return [require_permission("income.delete")()]
+        return [require_permission("income.view")()]
+
+    def _get(self, request, income_id):
+        income = get_object_or_404(Income, id=income_id)
+        if not user_has_farm_access(request.user, income.farm_id):
+            raise PermissionDenied("No access to this farm.")
+        return income
+
+    def get(self, request, income_id):
+        income = self._get(request, income_id)
+        return success_response(data=IncomeDetailSerializer(income).data)
+
+    def put(self, request, income_id):
+        income = self._get(request, income_id)
+        serializer = IncomeUpdateSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        income = update_income(income, serializer.validated_data, performed_by=request.user)
+        return success_response(data=IncomeDetailSerializer(income).data)
+
+    def delete(self, request, income_id):
+        income = self._get(request, income_id)
+        delete_income(income, performed_by=request.user)
+        return success_response(message="Income deleted.", data={})
+
+
 # ── Capital ───────────────────────────────────────────────────────────────────
 
 class CapitalListCreateView(APIView):
@@ -163,3 +200,35 @@ class CapitalApproveView(APIView):
             raise PermissionDenied("No access to this farm.")
         capital = approve_capital(capital, performed_by=request.user)
         return success_response(data=CapitalListSerializer(capital).data, message="Capital approved.")
+
+
+class CapitalDetailView(APIView):
+
+    def get_permissions(self):
+        if self.request.method in ("PUT", "PATCH"):
+            return [require_permission("capital.update")()]
+        if self.request.method == "DELETE":
+            return [require_permission("capital.delete")()]
+        return [require_permission("capital.view")()]
+
+    def _get(self, request, capital_id):
+        capital = get_object_or_404(Capital, id=capital_id)
+        if not user_has_farm_access(request.user, capital.farm_id):
+            raise PermissionDenied("No access to this farm.")
+        return capital
+
+    def get(self, request, capital_id):
+        capital = self._get(request, capital_id)
+        return success_response(data=CapitalDetailSerializer(capital).data)
+
+    def put(self, request, capital_id):
+        capital = self._get(request, capital_id)
+        serializer = CapitalUpdateSerializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        capital = update_capital(capital, serializer.validated_data, performed_by=request.user)
+        return success_response(data=CapitalDetailSerializer(capital).data)
+
+    def delete(self, request, capital_id):
+        capital = self._get(request, capital_id)
+        delete_capital(capital, performed_by=request.user)
+        return success_response(message="Capital deleted.", data={})

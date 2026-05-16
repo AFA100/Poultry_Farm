@@ -38,6 +38,15 @@ def approve_expense(expense: Expense, performed_by=None) -> Expense:
     return expense
 
 
+@transaction.atomic
+def delete_expense(expense: Expense, performed_by=None):
+    log_action(performed_by, "delete", "Expense", expense.id, {"amount": float(expense.amount)})
+    expense.delete()
+    invalidate_farm_dashboards(expense.farm_id)
+    invalidate_reports()
+    return None
+
+
 # ── Income ────────────────────────────────────────────────────────────────────
 
 @transaction.atomic
@@ -66,9 +75,40 @@ def approve_income(income: Income, performed_by=None) -> Income:
     income.is_approved = True
     income.save(update_fields=["is_approved"])
     log_action(performed_by, "approve", "Income", income.id, {"amount": float(income.amount)})
+
+
+@transaction.atomic
+def update_capital(capital: Capital, data: dict, performed_by=None) -> Capital:
+    if capital.is_approved:
+        raise ValidationError("Approved capital cannot be edited.")
+    for attr, value in data.items():
+        setattr(capital, attr, value)
+    capital.save()
+    log_action(performed_by, "update", "Capital", capital.id, data)
+    invalidate_farm_dashboards(capital.farm_id)
+    invalidate_reports()
+    return capital
+
+
+@transaction.atomic
+def delete_capital(capital: Capital, performed_by=None):
+    log_action(performed_by, "delete", "Capital", capital.id, {"amount": float(capital.amount)})
+    capital.delete()
+    invalidate_farm_dashboards(capital.farm_id)
+    invalidate_reports()
+    return None
     invalidate_farm_dashboards(income.farm_id)
     invalidate_reports()
     return income
+
+
+@transaction.atomic
+def delete_income(income: Income, performed_by=None):
+    log_action(performed_by, "delete", "Income", income.id, {"amount": float(income.amount)})
+    income.delete()
+    invalidate_farm_dashboards(income.farm_id)
+    invalidate_reports()
+    return None
 
 
 # ── Capital ───────────────────────────────────────────────────────────────────

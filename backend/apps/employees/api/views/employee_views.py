@@ -64,7 +64,7 @@ class EmployeeDetailView(APIView):
 
     def put(self, request, employee_id):
         employee = self._get_employee(request, employee_id)
-        serializer = EmployeeUpdateSerializer(data=request.data, partial=True)
+        serializer = EmployeeUpdateSerializer(employee, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         employee = update_employee(employee, serializer.validated_data, performed_by=request.user)
         return success_response(data=EmployeeDetailSerializer(employee).data)

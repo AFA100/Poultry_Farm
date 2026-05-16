@@ -29,3 +29,14 @@ class FeedTransactionCreateSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Quantity must be greater than zero.")
         return value
+
+
+class FeedTransactionUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FeedTransaction
+        fields = ["type", "quantity", "unit", "transaction_date", "note"]
+
+    def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Quantity must be greater than zero.")
+        return value

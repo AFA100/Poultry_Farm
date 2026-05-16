@@ -15,8 +15,11 @@ class HasERPPermission(BasePermission):
     3. User has the required permission (direct or via role)
     """
 
-    def __init__(self, permission_key: str):
-        self.permission_key = permission_key
+    def __init__(self, permission_key: str = None):
+        if permission_key is not None:
+            self.permission_key = permission_key
+        if not hasattr(self, "permission_key"):
+            raise ValueError("HasERPPermission requires a permission_key")
 
     # DRF calls has_permission on every request
     def has_permission(self, request, view):
@@ -32,8 +35,6 @@ def require_permission(permission_key: str):
     Factory helper so views can do:
         permission_classes = [require_permission("farms.view")]
     """
-    perm = HasERPPermission.__new__(HasERPPermission)
-    perm.permission_key = permission_key
     return type(
         f"HasPerm_{permission_key.replace('.', '_')}",
         (HasERPPermission,),

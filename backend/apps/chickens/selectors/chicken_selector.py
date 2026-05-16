@@ -27,9 +27,13 @@ def get_movements(user, filters: dict = None):
     return qs.order_by("-created_at")
 
 
-def get_batch_available_quantity(batch_id) -> int:
+def get_batch_available_quantity(batch_id, exclude_movement_id=None) -> int:
     """Returns current live quantity for a batch: SUM(IN) - SUM(OUT)."""
-    result = ChickenMovement.objects.filter(batch_id=batch_id).aggregate(
+    qs = ChickenMovement.objects.filter(batch_id=batch_id)
+    if exclude_movement_id:
+        qs = qs.exclude(id=exclude_movement_id)
+
+    result = qs.aggregate(
         total_in=Sum("quantity", filter=Q(type=MovementTypeEnum.IN)),
         total_out=Sum("quantity", filter=Q(type=MovementTypeEnum.OUT)),
     )

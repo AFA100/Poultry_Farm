@@ -1,3 +1,7 @@
-from .feed_serializer import FeedInventorySerializer, FeedTransactionListSerializer, FeedTransactionCreateSerializer
+from .feed_serializer import (
+    FeedInventorySerializer, FeedTransactionListSerializer, FeedTransactionCreateSerializer, FeedTransactionUpdateSerializer,
+)
 
-__all__ = ["FeedInventorySerializer", "FeedTransactionListSerializer", "FeedTransactionCreateSerializer"]
+__all__ = [
+    "FeedInventorySerializer", "FeedTransactionListSerializer", "FeedTransactionCreateSerializer", "FeedTransactionUpdateSerializer",
+]

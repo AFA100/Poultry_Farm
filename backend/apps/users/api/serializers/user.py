@@ -20,6 +20,12 @@ class UserCreateSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
+class UserUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["full_name", "email", "is_active"]
+
+
 class UserListSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

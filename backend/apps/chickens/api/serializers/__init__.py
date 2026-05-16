@@ -1,7 +1,7 @@
-from .batch_serializer import ChickenBatchListSerializer, ChickenBatchCreateSerializer
-from .movement_serializer import ChickenMovementListSerializer, ChickenMovementCreateSerializer
+from .batch_serializer import ChickenBatchListSerializer, ChickenBatchCreateSerializer, ChickenBatchUpdateSerializer
+from .movement_serializer import ChickenMovementListSerializer, ChickenMovementCreateSerializer, ChickenMovementUpdateSerializer
 
 __all__ = [
-    "ChickenBatchListSerializer", "ChickenBatchCreateSerializer",
-    "ChickenMovementListSerializer", "ChickenMovementCreateSerializer",
+    "ChickenBatchListSerializer", "ChickenBatchCreateSerializer", "ChickenBatchUpdateSerializer",
+    "ChickenMovementListSerializer", "ChickenMovementCreateSerializer", "ChickenMovementUpdateSerializer",
 ]

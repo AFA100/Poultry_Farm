@@ -20,3 +20,14 @@ class ChickenBatchCreateSerializer(serializers.ModelSerializer):
         if value <= 0:
             raise serializers.ValidationError("Quantity must be greater than zero.")
         return value
+
+
+class ChickenBatchUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ChickenBatch
+        fields = ["quantity", "entry_date", "source", "cost_per_unit", "status"]
+
+    def validate_quantity(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Quantity must be greater than zero.")
+        return value

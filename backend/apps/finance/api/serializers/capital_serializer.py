@@ -20,3 +20,23 @@ class CapitalCreateSerializer(serializers.ModelSerializer):
         if value < 0:
             raise serializers.ValidationError("Amount cannot be negative.")
         return value
+
+
+class CapitalDetailSerializer(serializers.ModelSerializer):
+    farm_name = serializers.CharField(source="farm.name", read_only=True)
+
+    class Meta:
+        model = Capital
+        fields = ["id", "farm", "farm_name", "amount", "investment_date", "note", "is_approved", "created_at"]
+        read_only_fields = ["id", "created_at", "is_approved"]
+
+
+class CapitalUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Capital
+        fields = ["amount", "investment_date", "note"]
+
+    def validate_amount(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Amount cannot be negative.")
+        return value

@@ -1,3 +1,3 @@
-from .feed_views import FeedInventoryListView, FeedTransactionListCreateView
+from .feed_views import FeedInventoryListView, FeedTransactionListCreateView, FeedTransactionDetailView
 
-__all__ = ["FeedInventoryListView", "FeedTransactionListCreateView"]
+__all__ = ["FeedInventoryListView", "FeedTransactionListCreateView", "FeedTransactionDetailView"]

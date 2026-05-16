@@ -22,8 +22,12 @@ def get_feed_transactions(user, filters: dict = None):
     return qs.order_by("-created_at")
 
 
-def get_farm_feed_remaining(farm_id) -> float:
-    result = FeedTransaction.objects.filter(farm_id=farm_id).aggregate(
+def get_farm_feed_remaining(farm_id, exclude_transaction_id=None) -> float:
+    qs = FeedTransaction.objects.filter(farm_id=farm_id)
+    if exclude_transaction_id:
+        qs = qs.exclude(id=exclude_transaction_id)
+
+    result = qs.aggregate(
         total_in=Sum("quantity", filter=Q(type=TransactionTypeEnum.IN)),
         total_out=Sum("quantity", filter=Q(type=TransactionTypeEnum.OUT)),
     )

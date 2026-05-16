@@ -1,3 +1,9 @@
-from .chicken_views import ChickenBatchListCreateView, ChickenMovementListCreateView
+from .chicken_views import (
+	ChickenBatchListCreateView, ChickenMovementListCreateView,
+	ChickenBatchDetailView, ChickenMovementDetailView,
+)
 
-__all__ = ["ChickenBatchListCreateView", "ChickenMovementListCreateView"]
+__all__ = [
+	"ChickenBatchListCreateView", "ChickenMovementListCreateView",
+	"ChickenBatchDetailView", "ChickenMovementDetailView",
+]

@@ -22,6 +22,15 @@ class IncomeCreateSerializer(serializers.ModelSerializer):
         return value
 
 
+class IncomeDetailSerializer(serializers.ModelSerializer):
+    farm_name = serializers.CharField(source="farm.name", read_only=True)
+
+    class Meta:
+        model = Income
+        fields = ["id", "farm", "farm_name", "source", "amount", "income_date", "description", "is_approved", "created_at", "updated_at"]
+        read_only_fields = ["id", "created_at", "updated_at", "is_approved"]
+
+
 class IncomeUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Income
