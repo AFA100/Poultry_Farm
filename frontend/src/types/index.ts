@@ -77,6 +77,15 @@ export interface ChickenMovement {
   created_at: string;
 }
 
+export interface FeedInventory {
+  id: string;
+  farm: string;
+  farm_name: string;
+  quantity: number;
+  unit: string;
+  last_updated: string;
+}
+
 export interface FeedTransaction {
   id: string;
   farm: string;
@@ -107,6 +116,16 @@ export interface Income {
   source: string;
   amount: number;
   income_date: string;
+  is_approved: boolean;
+  created_at: string;
+}
+
+export interface Capital {
+  id: string;
+  farm: string;
+  farm_name: string;
+  amount: number;
+  investment_date: string;
   is_approved: boolean;
   created_at: string;
 }
