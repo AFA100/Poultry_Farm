@@ -81,13 +81,13 @@ chart-5: hsl(50, 80%, 60%)  — Light yellow
 
 ---
 
-## 3. Background — Floating Diamond Animation
+## 3. Background — Floating Cube Animation
 
-The main content area has a **canvas-based animated diamond background**.
+The main content area has a **canvas-based animated Cube background**.
 
 ### Behavior
-- **18 diamond shapes** (rotated squares/rhombuses) float upward slowly across the screen
-- Each diamond drifts slightly left/right using a sine wave
+- **18 Cube shapes** (rotated squares/rhombuses) float upward slowly across the screen
+- Each cube drifts slightly left/right using a sine wave
 - On **mouse hover proximity** (within ~160px): diamond border **glows amber/gold**, shines with shadow blur
 - On **mouse leave**: glow smoothly **fades out** (eased transition, not instant)
 - Diamonds wrap around when they exit the viewport

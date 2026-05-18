@@ -26,6 +26,7 @@ export interface User {
 export interface Province {
   id: string;
   name: string;
+  is_active: boolean;
   farm_count: number;
   created_at: string;
 }
@@ -82,7 +83,7 @@ export interface FeedInventory {
   farm: string;
   farm_name: string;
   quantity: number;
-  unit: string;
+  unit: "kg" | "bag";
   last_updated: string;
 }
 
@@ -105,7 +106,8 @@ export interface Expense {
   category: string;
   amount: number;
   expense_date: string;
-  is_approved: boolean;
+  description: string;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -116,7 +118,8 @@ export interface Income {
   source: string;
   amount: number;
   income_date: string;
-  is_approved: boolean;
+  description: string;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -126,7 +129,8 @@ export interface Capital {
   farm_name: string;
   amount: number;
   investment_date: string;
-  is_approved: boolean;
+  note: string;
+  is_active: boolean;
   created_at: string;
 }
 
@@ -140,4 +144,25 @@ export interface GlobalDashboard {
   total_income: number;
   total_capital: number;
   net_profit: number;
+}
+
+export interface ProvinceDashboard {
+  total_farms: number;
+  total_employees: number;
+  total_chickens: number;
+  total_feed_remaining: number;
+  total_expenses: number;
+  total_income: number;
+  net_profit: number;
+}
+
+export interface FarmDashboard {
+  live_chickens: number;
+  feed_remaining: number;
+  total_employees: number;
+  total_expenses: number;
+  total_income: number;
+  total_capital: number;
+  net_profit: number;
+  mortality: number;
 }

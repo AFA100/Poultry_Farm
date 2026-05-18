@@ -1,3 +1,59 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --background:       38 40% 96%;
+    --foreground:       25 35% 12%;
+    --card:             38 30% 98%;
+    --card-foreground:  25 35% 12%;
+    --primary:          33 85% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary:        35 25% 90%;
+    --secondary-foreground: 25 35% 18%;
+    --muted:            36 20% 92%;
+    --muted-foreground: 30 15% 48%;
+    --accent:           20 72% 52%;
+    --accent-foreground: 0 0% 100%;
+    --destructive:      0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border:           35 20% 85%;
+    --input:            35 20% 85%;
+    --ring:             33 85% 45%;
+    --sidebar-background: 25 45% 10%;
+    --sidebar-foreground: 35 30% 85%;
+    --sidebar-primary:    33 85% 50%;
+    --sidebar-accent:     25 40% 16%;
+    --sidebar-border:     25 30% 18%;
+    --chart-1: 33 85% 45%;
+    --chart-2: 20 72% 52%;
+    --chart-3: 43 90% 55%;
+    --chart-4: 15 60% 40%;
+    --chart-5: 50 80% 60%;
+  }
+}
+
+@layer base {
+  * { @apply border-border; }
+  body { @apply bg-background text-foreground font-inter antialiased; }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--muted)); border-radius: 4px; }
+::-webkit-scrollbar-thumb { background: hsl(var(--muted-foreground) / 0.3); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground) / 0.5); }
+
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.skeleton { animation: skeleton-pulse 1.8s ease-in-out infinite; background-color: hsl(var(--muted)); }
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in { animation: fade-in 0.25s ease-out; }
